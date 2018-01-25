@@ -256,6 +256,7 @@ module.exports = function(app) {
     app.post('/admin/delete-block-list',adminRestrict, admin.deleteBlackList);
     
     app.post('/admin/support-list',adminRestrict, admin.getSupportList);
+    app.post('/admin/checkState', adminRestrict, admin.getStates);
     app.get('*', function(req, res) {
         res.status(404);
         res.render('404');

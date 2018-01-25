@@ -38,57 +38,118 @@
 <!-- beep alert history -->
 <span class='boxtitle'>알람</span>
 <br><br>
-<div class="alert alert-success alert-dismissable">
+<div class="alert alert-success alert-dismissable alarmUser">
     <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
-    <strong>신규회원</strong>  <a href="/user/{{=it.lastUser.username}}" class="alert-link"><span class='newMemberBox'>[{{=it.lastUser.username}}]</span></a>
+    <strong>신규회원</strong>  
+    <div id="alarmUsers">
+        <a href="/user/" class="alert-link"><span class='newMemberBox'></span></a>
+    </div>
 </div>
-<div class="support alert alert-success alert-dismissable" style="display: none;">
-    
+
+
+<div class="support alert alert-success alert-dismissable alarmSupport">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>고객질의</strong>  
+    <div id="alarmSupports">
+        <a href="/admin/support" class="alert-link"></a>
+    </div>
+</div>
+
+<div class="support alert alert-success alert-dismissable alarmCharging">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>충전요청</strong>  
+    <div id="alarmChargings">
+        
+    </div>
+</div>
+
+<div class="support alert alert-success alert-dismissable alarmExchange">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>환전요청</strong>  
+    <div id="alarmExchanges">
+        
+    </div>
 </div>
 <!--<span class='newMemberBox'>[{{=it.lastUser.username}}]</span>
 <br>
 <span class='newMemberBoxLabel'> New Member </span>-->
 <br><br>
-<div id="alarmNotification">
-    {{ for(var i in it.requests[0]) { }}
-        <div class='box'><a href='/admin/charging-management'>[{{=it.requests[0][i].username}}] 충전 <span>{{=it.requests[0][i].amount}}원</span></a></div>
-    {{ } }}
-    {{ for(var i in it.requests[1]) { }}
-        <div class='box'><a href='/admin/exchange-management'>[{{=it.requests[1][i].username}}] 환전 <span>{{=it.requests[1][i].amount/100}}원</span></a></div>
-    {{ } }}
-</div>
 <script>
     var socket = io('http://45.63.122.46:80');
     function beep() {
-        var snd = new Audio('../../client_old/sounds/beep-04.wav');  
+        var snd = new Audio('../../client_old/sounds/beep-10.wav');  
         snd.play();
     }
-    socket.on('news', function (data) {
-        console.log("Rendering news : ",data);
+    
+    setInterval(function(){
+        console.log('calling');
+        $.post("/admin/checkState", function(data){
+            var chargings = data.chargings;
+            var exchanges = data.exchangelist;
+            var lastUser = data.lastUser;
+            var supports = data.supports;
+            if(lastUser.length != 0){
+                var innerHtml = '';
+                $.each(lastUser, function(item,value){
+                    var userName = value.username;
+                    innerHtml += '<a href="/user/'+userName+'" class="alert-link"><span class="newMemberBox">'+userName+'</span></a>';
+                });
+                $("#alarmUser").show();
+                $("#alarmUsers").html(innerHtml);
+            }
+            else{
+                $("#alarmUser").html("");
+                $("#alarmUser").hide();
+            }
 
-        var chargings = data[0];
-        var exchanges = data[1];
-        var chargins_html = "";
-        var exchanges_html = "";
-        for(var i = 0;i < chargings.length;i++){
-            chargins_html += "<div class='box'><a href='/admin/charging-management'>["+chargings[i].username+"] Deposit <span> $"+chargings[i].amount+" </span></a></div>";
-        }
-        for(var i = 0;i < exchanges.length;i++){
-            exchanges_html += "<div class='box'><a href='/admin/exchange-management'>["+exchanges[i].username+"] Withdraw <span> $"+exchanges[i].amount+" </span></a></div>";
-        }
-        $("#alarmNotification").html(chargins_html + exchanges_html);
-        beep();
-    });
-    socket.on('news_member_register', function (data) {
-        console.log("rendering last member", data);
-        $(".newMemberBox").text('['+data+']');
-        beep();
-    });
-    socket.on('newsupport', function(data){
-        $(".support").html('');
-        console.log(data);
-        $(".support").html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button><strong>New Support From [<a href="/admin/support" class="alert-link">'+data.username+'</a>]</strong>');
-        $(".support").show();
-        beep();
-    })
+            if(supports.length != 0){
+                var innerHtml = '';
+                $.each(supports, function(item,value){
+                    var userName = value.username;
+                    innerHtml += '<a href="/admin/support" class="alert-link"><span class="newMemberBox">'+userName+'</span></a>';
+                });
+                $("#alarmSupports").html(innerHtml);
+                $("#alarmSupport").show();
+            }
+            else{
+                $("#alarmSupport").hide();
+                $("#alarmSupports").html("");
+            }
+
+            if(chargings.length != 0){
+                var innerHtml = '';
+                $.each(chargings, function(item,value){
+                    var userName = value.username;
+                    var amount = value.amount;
+                    innerHtml += '<a href="/admin/charging-management" class="alert-link"><div class="box">'+userName+' 충전 <span>' + amount/100 + '원</span></div></a>';
+                });
+                $("#alarmChargings").html(innerHtml);
+                $("#alarmCharging").show();
+            }
+            else{
+                $("#alarmCharging").hide();
+                $("#alarmChargings").html("");
+            }
+
+            if(exchanges.length != 0){
+                var innerHtml = '';
+                $.each(exchanges, function(item,value){
+                    var userName = value.username;
+                    var amount = value.amount;
+                    innerHtml += '<a href="/admin/exchange-management" class="alert-link"><div class="box">'+userName+' 환전 <span>' + amount/100 + '원</span></div></a>';
+                });
+                $("#alarmExchanges").html(innerHtml);
+                $("#alarmExchange").show();
+            }
+            else{
+                $("#alarmExchange").hide();
+                $("#alarmExchanges").html("");
+            }
+
+
+            if(chargings.length != 0 || exchanges != 0 || lastUser != 0 || supports != 0){
+                beep();
+            }
+        });
+    }, 3000);
 </script>

@@ -584,6 +584,29 @@ exports.getSupportList = function(req, res, next){
         });
     });
 }
+exports.getStates = function(req, res, next){
+    //get last user
+    database.getUnconfirmedUser(function(err, usrs){
+        //get exchanging and charging list
+        database.getChargingWaiting(function(err, charinglist){
+            database.getExchangeWaiting(function(err, exchangelist){
+                database.getSupports(function(err, supports){
+                    res.json({
+                        'lastUser' : usrs,
+                        'chargings' : charinglist,
+                        'exchangelist' : exchangelist,
+                        'supports' : supports
+                    });
+                });
+                   
+            });
+        });
+
+        
+    });
+    
+}
+
 exports.getChargingList = function(req, res, next){
     var start = 0;
     var amount = 5;

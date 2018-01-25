@@ -628,6 +628,20 @@ exports.getExchangeWaiting = function(callback) {
     });
 }
 
+exports.getUnconfirmedUser = function(callback){
+    query("SELECT * from users where confirmed = 0", function(err, result) {
+        if (err) return callback(err);
+        callback(null, result.rows);
+    });
+}
+
+exports.getSupports = function(callback) {
+    query("select supports.*,supports.id as supportid,users.* from supports inner join users on supports.creator_id = users.id where supports.confirmed = 0 ORDER BY supports.created DESC", function(err, result) {
+        if (err) return callback(err);
+        callback(null, result.rows);
+    });
+}
+
 exports.getMemberList = function(start, limit, condition, callback){
     var sql = "select * from users ";
     var total_cnt = 0;

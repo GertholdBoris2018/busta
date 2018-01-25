@@ -1,0 +1,14 @@
+
+<script>
+    var socket = io('http://45.63.122.46:80/');
+    $(document).ready(function(){
+        var user_id = $("#currentUserId").val();
+        socket.on('news_chat_approve'+user_id, function (data) {
+            console.log("Rendering news : ",data);
+        });
+        socket.on('charDeclined', function (data) {
+            console.log("rendering last member", data);
+        });
+    })
+    
+</script>

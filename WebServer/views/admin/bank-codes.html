@@ -1,0 +1,156 @@
+{{##def.page_title = 'Bank Codes' #}}
+{{##def.content:
+
+<script type="text/javascript">
+
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    };
+
+    function applyConfirm(bankCodeId) {
+        var already_confirmed_length = document.getElementById("already_confirmed_length").value;
+        if(already_confirmed_length > 0){
+            alert("There is already confirmed account. If you want to add new account, Please remove the current confirmed account firstly and try again.");
+        }
+        else {
+            if (confirm("Are you sure to confirm?")) {
+                var url = '/admin/bank-codes/confirm/' + bankCodeId;
+                window.location.href = url;
+            }
+        }
+    };
+
+    function applyCancel(bankCodeId) {
+        if (confirm("Are you sure to cancel?")) {
+            var url = '/admin/bank-codes/cancel/' + bankCodeId;
+            window.location.href = url;
+        }
+    };
+
+</script>
+<form action="/logout" method="post" id='logout'></form>
+
+<div class="content panel radius" style="width: 80% !important; margin-left: auto; margin-right: auto;">
+    <div class="settings">
+        <div class="small-2 columns">
+            <!--<ul class="menu">
+                <li>
+                    <a href="/admin/member-management">Members</a>
+                </li>
+
+                <li class="active">
+                    <a href="/admin/charging-management">Chargings</a>
+                </li>
+
+                <li>
+                    <a href="/admin/exchange-management">Exchanges</a>
+                </li>
+
+                <li>
+                    <a class="active" href="/admin/bank-codes">Bank Codes</a>
+                </li>
+
+                <li>
+                    <a href="/admin/member-management">Setting</a>
+                </li>
+
+                <li>
+                    <a onclick="logout();">
+                        Logout
+                    </a>
+                </li>
+            </ul>-->
+            {{#def.include('../template/sidebar')}}
+        </div>
+        <div class="small-10 columns setts-content">
+            <h5 class="">계좌관리</h5>
+            <hr/>
+
+            <div class="row">
+                <form class="panel callout" action="/admin/save-bankcode" method="post">
+                    <div class="row">
+                        <div class="large-4 columns">
+                            <label>은행
+                                <input type="text" id="bank_name" name="bank_name" required/>
+                            </label>
+                        </div>
+                        <div class="large-4 columns">
+                            <label>계좌번호
+                                <input type="text" id="account_number" name="account_number"  required/>
+                            </label>
+                        </div>
+                        <div class="large-4 columns">
+                            <label>예금주
+                                <input type="text" id="account_name" name="account_name" required/>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="row" style="text-align: center">
+                        <button class="btn success">계좌등록</button>
+                    </div>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>은행</th>
+                    <th>예금주</th>
+                    <th>계좌번호</th>
+                    <th>상태</th>
+                    <th>관리</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {{? it.bankcodes_length > 0}}
+                    {{~it.bankcodes :bankcode:index}}
+                    {{? bankcode.confirmed == 1}}
+                    <tr class="confirmed_row">
+                        {{?? bankcode.confirmed == 2}}
+                    <tr class="removed_row">
+                        {{??}}
+                    <tr>
+                        {{?}}
+                        <td>{{= index + 1}}</td>
+                        <td>{{= bankcode.bank_name}}</td>
+                        <td>{{= bankcode.bank_account_name}}</td>
+                        <td>{{= bankcode.bank_account_number}}</td>
+                        <td style="text-align:center">
+                            {{? bankcode.confirmed == '0'}}
+                            <span class="label">WAITING</span>
+                            {{?? bankcode.confirmed == '1'}}
+                            <span class="label success" style="margin: 0">CONFIRMED</span>
+                            {{?? bankcode.confirmed == '2'}}
+                            <span class="label alert" style="margin: 0">REMOVED</span>
+                            {{?}}
+                        </td>
+                        <td style="text-align:center">
+                            {{? bankcode.confirmed == '0'}}
+                            <a class="confirmed_label" onclick="applyConfirm('{{= bankcode.id}}')">CONFIRM</a> <a class="removed_label in_line" onclick="applyCancel('{{= bankcode.id}}')">CANCEL</a>
+                            {{?? bankcode.confirmed == '1'}}
+                            <a class="removed_label in_line" onclick="applyCancel('{{= bankcode.id}}')">CANCEL</a>
+                            {{?? bankcode.confirmed == '2'}}
+
+                            {{?}}
+                        </td>
+                    </tr>
+                    {{~}}
+                {{??}}
+                <tr>
+                    <td colspan="8" >No Bank Codes.</td>
+                </tr>
+                {{?}}
+                </tbody>
+            </table>
+            <input type="hidden" value="{{=it.already_confirmed_length}}" id="already_confirmed_length" />
+        </div>
+    </div>
+    #}}
+    {{#def.include('../template/main_old')}}

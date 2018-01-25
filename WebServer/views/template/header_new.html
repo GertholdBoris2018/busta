@@ -1,0 +1,64 @@
+<header>
+    <nav id="top-bar">
+
+        <div class="title">
+            <a href="/">
+                <h1 class="hide-for-small-only">BUSTAWON</h1>
+				<h1 class="show-for-small-only">BWON</h1>
+            </a>
+        </div>
+
+        <div class="user-login">
+            {{?it.user}}
+
+			<div class="username">
+                {{?it.user.userclass == "admin"}}
+                <a href="/admin/member-management">{{=it.user.username}}</a>
+                {{??}}
+                <a href="/security">{{=it.user.username}}</a>
+                {{?}}
+            </div>
+
+
+            <div class="balance-bits">
+                <span>보유금액: </span>
+                <!--<span class="balance">{{#def.format:{n: it.user.balance_satoshis, decimals:2} }}</span>-->
+                <span class="balance"><b>{{#def.format:{n: it.user.balance_satoshis, decimals:0} }}</b> 원</span>
+            </div>
+            
+            {{??}}
+            <div class="register">
+                <a href="/register">회원가입</a>
+            </div>
+            <div class="login">
+                <a href="/login">로그인</a>
+            </div>
+            {{?}}
+        </div>
+
+
+		{{?it.user}}
+	<div class="menu">
+				<ul class="nav-list">
+					<!--<li class="nav-item"><a href="/play">게임시작</a></li>-->
+				    <li class="nav-item"><a href="/deposit">충전하기</a></li>
+					<li class="nav-item"><a href="/withdraw">환전하기</a></li>
+					<li class="nav-item"><a href="/user/{{=it.user.username}}">배팅내역</a></li>
+<!--					<li class="nav-item"><a href="/leaderboard">랭킹</a></li> -->
+					<li class="nav-item"><a href="/support">1:1문의</a></li>
+				    <!--<li class="nav-item"><a href="/security">정보수정</a></li>-->
+					<li class="nav-item"><a href="/faq">이용안내</a></li>
+				</ul>
+	</div>
+	{{??}}
+	<div class="no_menu">
+            <ul class="no_nav-list">
+                <li class="no_nav-item"><a href="/faq">이용안내</a></li>
+<!--				<li class="no_nav-item"><a href="/leaderboard">랭킹</a></li> -->
+            </ul>
+        </div>
+	{{?}} 
+    </nav>
+
+
+</header>

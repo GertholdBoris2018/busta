@@ -1,0 +1,94 @@
+<script src="/node_modules/socket.io-client/socket.io.js"></script>
+<ul class="menu">
+    <li class="{{? it.sidebar == 'memberManagement'}} active {{?}}">
+        <a class="{{? it.sidebar == 'memberManagement'}} active {{?}}" href="/admin/member-management">회원관리</a>
+    </li>
+
+    <li class="{{? it.sidebar == 'chargeManagement'}} active {{?}}">
+        <a class="{{? it.sidebar == 'chargeManagement'}} active {{?}}" href="/admin/charging-management">충전관리</a>
+    </li>
+
+    <li class="{{? it.sidebar == 'exchangeManagement'}} active {{?}}">
+        <a class="{{? it.sidebar == 'exchangeManagement'}} active {{?}}" href="/admin/exchange-management">환전관리</a>
+    </li>
+
+    <li class="{{? it.sidebar == 'bankCode'}} active {{?}}">
+        <a class="{{? it.sidebar == 'bankCode'}} active {{?}}" href="/admin/bank-codes">계좌관리</a>
+    </li>
+
+    <li class="{{? it.sidebar == 'accountSetup'}} active {{?}}">
+        <a class="{{? it.sidebar == 'accountSetup'}} active {{?}}" href="/admin/account-setup">설정</a>
+    </li>
+
+    <li class="{{? it.sidebar == 'supports'}} active {{?}}">
+        <a class="{{? it.sidebar == 'supports'}} active {{?}}" href="/admin/support">고객센터</a>
+    </li>
+
+    <li class="{{? it.sidebar == 'statistics'}} active {{?}}">
+        <a class="{{? it.sidebar == 'statistics'}} active {{?}}" href="/admin/statistics">통계</a>
+    </li>
+
+    <li>
+        <a onclick="logout();">
+            로그아웃
+        </a>
+    </li>
+</ul>
+
+<!-- beep alert history -->
+<span class='boxtitle'>알람</span>
+<br><br>
+<div class="alert alert-success alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+    <strong>신규회원</strong>  <a href="/user/{{=it.lastUser.username}}" class="alert-link"><span class='newMemberBox'>[{{=it.lastUser.username}}]</span></a>
+</div>
+<div class="support alert alert-success alert-dismissable" style="display: none;">
+    
+</div>
+<!--<span class='newMemberBox'>[{{=it.lastUser.username}}]</span>
+<br>
+<span class='newMemberBoxLabel'> New Member </span>-->
+<br><br>
+<div id="alarmNotification">
+    {{ for(var i in it.requests[0]) { }}
+        <div class='box'><a href='/admin/charging-management'>[{{=it.requests[0][i].username}}] 충전 <span>{{=it.requests[0][i].amount}}원</span></a></div>
+    {{ } }}
+    {{ for(var i in it.requests[1]) { }}
+        <div class='box'><a href='/admin/exchange-management'>[{{=it.requests[1][i].username}}] 환전 <span>{{=it.requests[1][i].amount/100}}원</span></a></div>
+    {{ } }}
+</div>
+<script>
+    var socket = io('http://45.63.122.46:80');
+    function beep() {
+        var snd = new Audio('../../client_old/sounds/beep-04.wav');  
+        snd.play();
+    }
+    socket.on('news', function (data) {
+        console.log("Rendering news : ",data);
+
+        var chargings = data[0];
+        var exchanges = data[1];
+        var chargins_html = "";
+        var exchanges_html = "";
+        for(var i = 0;i < chargings.length;i++){
+            chargins_html += "<div class='box'><a href='/admin/charging-management'>["+chargings[i].username+"] Deposit <span> $"+chargings[i].amount+" </span></a></div>";
+        }
+        for(var i = 0;i < exchanges.length;i++){
+            exchanges_html += "<div class='box'><a href='/admin/exchange-management'>["+exchanges[i].username+"] Withdraw <span> $"+exchanges[i].amount+" </span></a></div>";
+        }
+        $("#alarmNotification").html(chargins_html + exchanges_html);
+        beep();
+    });
+    socket.on('news_member_register', function (data) {
+        console.log("rendering last member", data);
+        $(".newMemberBox").text('['+data+']');
+        beep();
+    });
+    socket.on('newsupport', function(data){
+        $(".support").html('');
+        console.log(data);
+        $(".support").html('<button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button><strong>New Support From [<a href="/admin/support" class="alert-link">'+data.username+'</a>]</strong>');
+        $(".support").show();
+        beep();
+    })
+</script>

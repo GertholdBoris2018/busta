@@ -1,0 +1,61 @@
+{{##def.page_title = 'Deposit History' #}}
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+</script>
+<form action="/logout" method="post" id='logout'></form>
+
+<div class="content panel radius" style="width: 80% !important; margin-left: auto; margin-right: auto;">
+    <div class="settings">
+        <div class="small-2 columns">
+            <!--<ul class="menu">
+                <li>
+                    <a href="/admin/member-management">Members</a>
+                </li>
+
+                <li class="active">
+                    <a class="active" href="/admin/charging-management">Chargings</a>
+                </li>
+
+                <li>
+                    <a href="/admin/exchange-management">Exchanges</a>
+                </li>
+
+                <li>
+                    <a href="/admin/bank-codes">Bank Codes</a>
+                </li>
+
+                <li>
+                    <a href="/admin/account-setup">Setting</a>
+                </li>
+
+                <li>
+                    <a onclick="logout();">
+                        Logout
+                    </a>
+                </li>
+            </ul>-->
+            {{#def.include('../template/sidebar')}}
+        </div>
+        <div class="small-10 columns setts-content">
+            <h5 class="">Charging Edit</h5>
+            <hr/>
+            <form action="/admin/charging-management/apply" method="post">
+                <input type="hidden" name="id" value="{{= it.charging.id}}" required>
+                <input type="hidden" name="user_id" value="{{= it.charging.user_id}}" required>
+                <label>Charging Amount</label>
+                <input type="text" name="amount" value="{{= it.charging.amount}}" required>
+
+                <input type="submit" class="border-button right blue" value="Apply">
+            </form>
+
+        </div>
+    </div>
+    #}}
+    {{#def.include('../template/main_old')}}

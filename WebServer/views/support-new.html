@@ -1,0 +1,104 @@
+{{##def.page_title = 'Support' #}}
+{{##def.content:
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".click-row").click(function () {
+            window.location = "/support/"+$(this).data('href');
+        });
+    });
+
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+</script>
+<form action="/logout" method="post" id='logout'></form>
+<div class="content row panel radius">
+
+    <div class="settings">
+        <div class="small-2 columns">
+            <ul class="menu">
+                <!--<li>
+                    <a href="/account">내정보</a>
+                </li>
+				-->
+                <li>
+                    <a href="/security">정보수정</a>
+                </li>
+                <li>
+                    <a href="/deposit">충전하기</a>
+                </li>
+                <li>
+                    <a href="withdraw">환전하기</a>
+                </li>
+
+                <li class="active">
+                    1:1문의
+                </li>
+                <li>
+                    <a onclick="logout();">
+                        로그아웃
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="small-10 columns sets-content">
+            <h5><b>1:1문의하기</b></h5>
+            <hr>
+            <div class="row contact">
+                <form action="/support" id="contact" method="post">
+
+                    <label for="title">제목</label>
+                    <input type="text" id="title" name="title" value="" required=""/>
+
+
+
+                    <label for="message">내용</label>
+                    <textarea rows="10" id="message" name="message" required> </textarea>
+                    <input type="submit" class="border-button right blue" value="1:1문의하기"/>
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="small-10 columns sets-content">
+            <h5 >문의내역</h5>
+            <hr>
+            {{?it.supports.length > 0}}
+            <table class="display responsive nowrap">
+                <thead>
+                <tr>
+                    <td class="show-for-large-up">날짜</td>
+                    <td>제목</td>
+                    <td>상태</td>
+                </tr>
+                </thead>
+                <tbody>
+                {{~it.supports :support:index}}
+                <tr class="click-row" data-href="{{=support.id}}">
+                    <td class="show-for-large-up">{{=(new Date(Date.parse(support.created)).toISOString().split('.')[0]).substr(0,19).replace('T', ' ')}}</td>
+                    <td><b><font color="blue">{{=support.title}}</font></b></td>
+                    <td style="text-align: center">
+                        {{? support.confirmed == '1'}}
+                        <a href="/support/{{=support.id}}" class="label success">Confirm</a>
+                        {{?}}
+                    </td>
+                </tr>
+                {{~}}
+                </tbody>
+            </table>
+            {{??}}
+            <br>
+            <br>
+            <br>
+            <p>문의내역이 없습니다.</p>
+            {{?}}
+        </div>
+    </div>
+</div>
+#}}
+{{#def.include('./template/main_new')}}

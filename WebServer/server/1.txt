@@ -1,0 +1,3 @@
+user.js:        if (offset > 100000) {
+database.js:    var currentBalance = 10000;
+database.js:    assert(satoshis > 10000);

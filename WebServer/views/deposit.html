@@ -1,0 +1,138 @@
+{{##def.page_title = 'Deposit History' #}}
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+
+    function setAccountNumber() {
+        document.getElementById('account-number').value = document.getElementById('account-number-value').value;
+    }
+
+    window.onload = function () {
+        document.getElementById("request_charging_frm").onsubmit = function onSubmit(form) {
+            var bankcode_length = document.getElementById("bankcode_length").value;
+
+            if(bankcode_length == '0'){
+                alert("관리자 승인 대기중입니다. 관리자 승인후 충전이 가능합니다. 빠른 승인을 원하실 경우 1:1문의 남겨주세요.");
+                return false;
+            }
+        }
+    }
+</script>
+    <form action="/logout" method="post" id='logout'></form>
+
+    <div class="content row panel radius">
+        <div class="settings">
+            <div class="small-2 columns">
+                <ul class="menu">
+                    <!--<li>
+                        <a href="/account">내정보</a>
+                    </li>
+					-->
+                    <li>
+                        <a href="/security">정보수정</a>
+                    </li>
+                    <li class="active">
+                        충전하기
+                    </li>
+                    <li>
+                        <a href="/withdraw">환전하기</a>
+                    </li>
+
+                    <li>
+                        <a href="/support">1:1문의</a>
+                    </li>
+                    <li>
+                        <a onclick="logout();">
+                            로그아웃
+                        </a>
+                    </li>
+                </ul>
+            </div>
+			
+            <div class="small-10 columns setts-content">
+                <h5 class=""><b>부스타원 충전하기</b></h5>
+                <hr>
+				<div class="money_notice">
+				&#8251; 입금계좌가 주기적으로 변경됩니다. <font color="red">입금 전 입금계좌정보</font>를 꼭 확인해 주세요.<br>
+				&#8251; 입금액은 10,000원 이상 만원단위 입니다.<br>
+				&#8251; 관리자 승인 후 <font color="red">첫충전 및 입금계좌 확인</font>이 가능합니다. <br>
+				&#8251; 입금은 <font color="red">본인명의 계좌</font>로 입금해주세요.<br>
+				</div>
+                <p class="account">
+					<div class="money_account_btn" id="toggleButton" onclick="setAccountNumber();" />
+						입금계좌 요청하기
+					</div>
+                    <br/>
+                    <input type="text" id="account-number" value="" placeholder="입금계좌번호" readonly>
+                    <input type="hidden" id="bankcode_length" value="{{=it.bankcode_length}}" />
+                    {{? it.bankcode_length>0 && it.user.confirmed == 1}}
+                    <input type="hidden" id="account-number-value" value="{{=it.bankCode.bank_account_name}} {{=it.bankCode.bank_account_number}} {{=it.bankCode.bank_name}} ">
+                    {{??}}
+                    <input type="hidden" id="account-number-value" value="관리자 승인 후 입금계좌 확인이 가능합니다. 불확실한 계좌번호로 가입하셨다면 다시 가입해 주세요.">
+                    {{?}}
+                </p>
+                <hr>
+                <div class="account">
+					{{? it.user.confirmed == 1}}
+                    <form action="/request-charging" method="post" id="request_charging_frm">
+                        <label for="charge-amount">충전금액 임력 <span class="small">(환전은 1만원 단위로 신청이 가능합니다.)</span></label>
+                        <input type="number" id="charge-amount" name="amount" placeholder="0" required>
+                        <input type="submit" class="border-button right blue" value="충전신청하기">
+                    </form>
+					{{??}}
+					<h3></h3>
+					{{?}}
+                </p>
+            </div>
+
+            <div class="small-12 columns sets-content">
+                <h5 >충전내역</h5>
+                <hr>
+                {{?it.deposits.length > 0}}
+                <table>
+                    <thead>
+                    <tr>
+                        <td class="show-for-large-up">날짜</td>
+                        <td>금액</td>
+                        <!--<td>계좌</td>-->
+                        <td>상태</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{~it.deposits :deposit:index}}
+                    <tr>
+                        <td class="show-for-large-up">{{=(new Date(Date.parse(deposit.created)).toISOString().split('.')[0]).substr(0,10)}}</td>
+                        <!--<td>{{#def.format: {n: deposit.amount, decimals: 2 } }}</td>-->
+                        <td>{{=deposit.amount}}</td>
+                        <!--<td>{{=deposit.bank_account_name}} | {{=deposit.account_number}} | {{=deposit.bank_name}}</td>-->
+                        <td style="text-align: center">
+                            {{? deposit.confirmed == '0'}}
+                            <span>Wait</span>
+                            {{?? deposit.confirmed == '1'}}
+                            <span class="label success">Confirm</span>
+                            {{?? deposit.confirmed == '2'}}
+                            <span class="label alert">Cancel</span>
+                            {{?}}
+                        </td>
+
+                    </tr>
+                    {{~}}
+                    </tbody>
+                </table>
+                {{??}}
+                <br>
+                <br>
+                <br>
+                <p>충전내역이 없습니다.</p>
+                {{?}}
+            </div>
+        </div>
+    </div>
+#}}
+{{#def.include('./template/main_new')}}

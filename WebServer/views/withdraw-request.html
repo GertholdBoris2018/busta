@@ -1,0 +1,112 @@
+{{##def.page_title = 'Withdraw Request' #}}
+
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+
+    window.onload = function () {
+        document.getElementById("withdraw_request_frm").onsubmit = function onSubmit(form) {
+			var amount2 = parseInt(document.getElementById("amount2").value) * 100;
+var user_amount = document.getElementById("my_current_bit_int").value;
+            if(amount2 > user_amount){
+                alert("보유금액보다. 환전금액 액수가 큽니다");
+                return false;
+            }
+			document.getElementById("amount").value = amount2;
+        }
+    }
+
+</script>
+<form action="/logout" method="post" id='logout'></form>
+<div class="content row panel radius">
+
+    <div class="settings">
+        <div class="small-2 columns">
+            <ul class="menu">
+                <!--<li>
+                    <a href="/account">내정보</a>
+                </li>
+				-->
+                <li>
+                    <a href="/security">정보수정</a>
+                </li>
+                <li>
+                    <a href="/deposit">충전하기</a>
+                </li>
+                <li >
+                    <a class="active" href="/withdraw">환전하기</a>
+                </li>
+
+                <li>
+                    <a href="/support">1:1문의</a>
+                </li>
+                <li>
+                    <a onclick="logout();">
+                        로그아웃
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="small-10 columns sets-content">
+            <h5><b>부스타원 환전하기</b></h5>
+            <hr/>
+
+            {{? it.can_withdraw == 'yes'}}
+            <form action="/withdraw-request" method="post" id="withdraw_request_frm" >
+                <!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
+                <input style="display:none" type="text" name="fakeusernameremembered"/>
+                <input style="display:none" type="password" name="fakepasswordremembered"/>
+
+				<div class="money_notice">
+				&#8251; 각 은행 점검시간(보통 23:00~01:00)으로 인해 입출금이 제한될 수가 있으니 입출금요청시 이 시간대를 피해주세요.<br>
+				&#8251; 환전은 <font color="red">가입시 등록한 계좌</font>로만 환전이 가능합니다.<br>
+				&#8251; 환전금액은 <font color="red">최소 1만원 이상부터 만원단위</font>로 환전이 가능합니다.<br>
+				</div>
+
+                <div class="panel callout ">
+					<h5>환전가능 금액 : <span id="my_current_bit">{{#def.format:{n: it.user.balance_satoshis, decimals:0} }}</span> 원</h5>
+                </div>
+
+<input type="hidden" id="my_current_bit_int" value="{{=it.user.balance_satoshis}}"/>
+
+                <!--<label for="account_number">Account Number</label>
+                <input type="text" id="account_number" name="account_number" value="{{= it.user.account_number}}" required readonly/>-->
+				<br>
+				환전 계좌정보 확인<br><br>
+				<input type="text" value="{{=it.user.bank_account_name}} | {{=it.user.account_number}} | {{=it.user.bank_name}}" readonly>
+				<br>
+
+				환전금액 입력 <span class="small">(환전은 1만원 단위로 신청이 가능합니다.)</span><br><br>
+                <input type="number" id="amount2" name="amount2" placeholder="0" min="10000" step=".01" required />
+				<input type="hidden" id="amount" name="amount" />
+				<br>
+                비밀번호 입력<br><br>
+                <input type="password" id="password" name="password" autocomplete="off" required/>
+				
+				{{? it.user.confirmed == 1 }}
+                <a href="/withdraw" class="border-button ">돌아가기</a>
+                <input class="border-button right blue" value="환전신청" type="submit"/> 
+                <input type="hidden" name="withdrawal_id" value="{{= it.id}}" />
+				{{??}}
+				<h3>You can't request withdrawal now. Because, your account didn't confirmed yet. Please contact the admin if you want to withdraw.</h3>
+				{{?}}
+				<script>
+				</script>
+            </form>
+            {{??}}
+            <div class="alert-box alert">
+                <h1>환전은 충전한 이력이 있어야지만 가능합니다.<br>(무료 머니는 환전이 불가능합니다.)</h1>
+            </div>
+            {{?}}
+        </div>
+    </div>
+</div>
+#}}
+
+{{#def.include('./template/main_new')}}

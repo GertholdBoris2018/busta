@@ -1,0 +1,181 @@
+<style>
+.dt-button{
+    height:37px;
+    line-height: 20px;
+    font-size:15px !important;
+}
+.blockinput{
+    width:200px;
+    margin-right:10px;
+}
+</style>
+{{##def.page_title = 'Account Setup' #}}
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+    var url = '/admin/black-list';
+    $(document).ready(function(){
+        var dtable = $("#blacklist").DataTable({
+            "processing": true,
+			"serverSide": true,
+			"responsive": true,
+			'ajax': {
+				'url': url,
+				'type': 'POST',
+				"cache": false
+			},
+			"order": [],
+			"columnDefs": [
+				{
+					"className": "center",
+					"targets": "_all"
+				},
+				{
+					"targets": "_all",
+					"orderable": false
+				},
+				{
+					"targets": "_all",
+					"searchable": false
+				}
+			],
+			"aLengthMenu": [
+				[10, 15, 20, 50, -1],
+				[10, 15, 20, 50, 'ALL'] 
+			],
+			"iDisplayLength": 20,
+			bAutoWidth: true,
+			bFilter: true,
+            "columns": [
+				{ "data": "id"},
+				{ "data": "ipaddress" },
+                {
+
+                    "render": function(data, type, row, meta){
+                        var data = "";
+                        data += '<span id="'+row.id+'" class="removed_label">CANCEL</span>';
+                        return data;
+                    }
+                }
+			],
+            "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
+                var confirmed = aData.confirmed;
+                var row_class = '';
+                if(confirmed == 1) row_class = "confirmed_row";
+                if(confirmed == 2) row_class = "removed_row";
+                $(nRow).addClass( row_class );
+                return nRow;
+            },
+            dom: 'lf<"right"B><"blockinput right">rtip',
+            buttons: [
+                {
+                    text: 'Add Block Ip',
+                    action: function ( e, dt, node, config ) {
+                        var ip = $("#blockIpAddress").val();
+                        if(ip == ''){
+                            alert('아이피를 입력하세요!');
+                        }
+                        else{
+                            $.post( "/admin/add-block-list",{ipaddress:ip}, function( data ) {
+                                var msg = data.result;
+                                if(msg == "success"){
+                                    $("#blockIpAddress").val('');
+                                    dtable.ajax.reload();
+                                }
+                            });
+                        }
+                    }
+                }
+            ]
+        });
+        $("div.blockinput").html('<input type="text" id="blockIpAddress"  placeholder="Please input block ipaddress!">');
+        $("#blacklist_filter input")
+	        .unbind() 
+	        .bind("input", function(e) { 
+	        
+	        if(this.value.length >= 1 || e.keyCode == 13) {
+	           
+	           dtable.search(this.value).draw();
+	        }
+	        
+	        if(this.value == "") {
+	           dtable.search("").draw();
+	        }
+	        return;
+	    });
+        $(document).on('click','.removed_label',function(){
+            var id=$(this).attr('id');
+             $.post( "/admin/delete-block-list",{id:id}, function( data ) {
+                var msg = data.result;
+                if(msg == "success"){
+                    dtable.ajax.reload();
+                }
+            });
+        })
+    });
+</script>
+<form action="/logout" method="post" id='logout'></form>
+
+<div class="content panel radius" style="width: 80% !important; margin-left: auto; margin-right: auto;">
+    <div class="settings">
+        <div class="small-2 columns">
+            {{#def.include('../template/sidebar')}}
+        </div>
+        <div class="small-10 columns setts-content">
+            <h5 class="">Account Setup</h5>
+            <hr/>
+            <form action="/admin/account-setup/update" method="post">
+                <input type="hidden" name="id" value="{{= it.user.id}}" required>
+                <label>Username</label>
+                <input type="text" name="username" value="{{= it.user.username}}" required readonly>
+                <label>Email</label>
+                <input type="text" name="email" value="{{= it.user.email}}" required readonly>
+                <label>Bank Name</label>
+                <input type="text" name="bank_name" value="{{= it.user.bank_name}}" required>
+                <label>Account Number</label>
+                <input type="text" name="account_number" value="{{= it.user.account_number}}" required>
+                <label>Bank Account Name</label>
+                <input type="text" name="bank_account_name" value="{{= it.user.bank_account_name}}" required>
+                <label>Mobile Phone Number</label>
+                <input type="text" name="mobile_phone_number" value="{{= it.user.mobile_phone_number}}" required>
+                <input type="hidden" name="password" value="*****" required>
+                <input type="hidden" name="balance" value="{{= it.user.balance_satoshis}}" required>
+                <label>Block IP list</label>
+                <table  id="blacklist" class="display responsive nowrap" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>주소</th>
+                        <th style="width:200px;">액션</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    
+                    </tbody>
+                </table>
+                <label>Layer Popup Notice</label>
+                <textarea name="noticement" style="width:100%;height:300px;">
+                        {{?it.user.popup_notice}}
+                        {{= it.user.popup_notice}}
+                        {{??}}
+                        {{?}}
+                
+                </textarea>
+
+
+               <input type="submit" class="border-button right blue" value="Update">
+
+
+            </form>
+
+        </div>
+    </div>
+    #}}
+    {{#def.include('../template/main_old')}}

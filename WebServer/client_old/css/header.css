@@ -1,0 +1,342 @@
+/* Foundation Reset */
+
+
+
+/* Small screens */
+@media only screen and (max-width: 40em) {
+    .nav-top-bar .table-title {
+        display: none !important;
+    }
+}
+
+/* Messages for errors/success */
+.success {
+    position: relative;
+    background-color: #7cba00;
+    color: #f5f5f5;
+    font-size: 12px;
+    padding: 5px 15px;
+    margin: 0px 20%;
+    text-align: center;
+    line-height: 1;
+}
+
+.success a {
+    color: #fff;
+}
+
+.warning {
+    position: relative;
+    background-color: #ba3c12;
+    color: #f5f5f5;
+    font-size: 12px;
+    padding: 5px 15px;
+    margin: 0px 20%;
+    text-align: center;
+    line-height: 1;
+}
+
+
+
+/*///////////////////////////////////////////////////////////////////////////////////*/
+#top-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 2rem;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    font-family: "Verlag A", "Verlag B", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#top-bar .title {
+    float: left;
+}
+
+#top-bar .title h1 {
+    color: #e58929;
+    line-height: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    padding-left: 1rem;
+    font-family: "Courier New";
+}
+
+#top-bar .user-login {
+    float: right;
+    line-height: 40px;
+}
+
+
+/** Toggle design **/
+
+#top-bar .toggle-view {
+    line-height: 2rem;
+    float: right;
+    margin-right: 2rem;
+    cursor: pointer;
+}
+@media handheld, only screen and (max-width: 767px) {
+    #top-bar .toggle-view {
+        margin-right: 0.5rem;
+    }
+}
+
+#top-bar .toggle-view a {
+    border: 2px solid grey;
+    padding: 2px;
+}
+@media handheld, only screen and (max-width: 767px) {
+    
+    #top-bar .toggle-view a {
+        display: none;
+    }
+
+    #top-bar .toggle-view:after {
+        content: '\00a0';
+        line-height: 2rem;
+        width: 1rem;
+        padding: 0.5rem 0.5rem;
+        height: 1rem;
+        border: 2px solid grey;
+        cursor: pointer;
+		position:absolute;
+		margin:53px 0 0 0;
+		right:10px;
+	}
+
+    #top-bar .toggle-view.white:after {
+        background-color: black;
+    }
+    
+    #top-bar .toggle-view.black:after {
+        background-color: white;
+    }
+
+
+}
+
+
+/** Full Screen **/
+
+#top-bar .full-screen {
+	float: right;
+    line-height: 2rem;
+    padding-right: 1rem;
+}
+
+#top-bar .full-screen i{
+	border: 2px solid grey;
+    padding: 4px;
+    cursor: pointer;
+}
+
+
+/** User logged **/
+
+#top-bar .user-login .balance-bits {
+    display: inline-block;
+    padding-right: 1.5rem;
+}
+
+#top-bar .user-login .balance-bits span{
+    line-height: 2rem;
+    color: black;
+}
+
+
+#top-bar .balance-bits span b{
+    color:#f3962f;
+}
+
+#top-bar .user-login .username {
+    display: inline-block;
+    padding-right: 1rem;
+}
+
+#top-bar .user-login .username a {
+    line-height: 2rem;
+    font-weight: bold;
+	color:#008cba;
+}
+
+/*user login*/
+#top-bar .menu, #top-bar .menu-mobile {
+    float: left;
+    margin-left: 1rem;
+	height:40px;
+	width:auto;
+}
+
+#top-bar .nav-list {
+    line-height: 40px;
+	height:40px;
+    padding: 0;
+    margin: 0;
+}
+
+#top-bar .nav-item {
+    display: inline-block;
+    padding-right: 1rem;
+}
+
+#top-bar .nav-item a {
+    line-height: 40px;
+    color:#e58929;
+    font-size: 18px;
+}
+
+/*user no login*/
+#top-bar .no_menu, #top-bar .menu-mobile {
+    float: right;
+    margin-right: 3rem;
+}
+
+#top-bar .no_nav-list {
+    line-height: 40px;
+    
+    padding: 0;
+    margin: 0;
+}
+
+#top-bar .no_nav-item {
+    display: inline-block;
+
+    padding-right: 1rem;
+}
+
+#top-bar .no_nav-item a {
+    line-height: 40px;
+    color: black;
+    font-size: 18px;
+}
+
+
+
+
+@media handheld, only screen and (max-width: 767px) {
+
+/*user login*/
+	#top-bar .menu, #top-bar .menu-mobile {
+	   float: left;
+		padding:0rem;
+		width:100%;
+		border-bottom:1px solid #dddddd;
+		height:54px;
+		margin-left:0px;
+	}
+
+	#top-bar .nav-list {
+	    padding: 0;
+	    margin: 0;
+		line-height: 26px;
+	}
+
+
+	#top-bar .nav-item {
+	    display: inline-block;
+		text-align:center;
+		width:32%;
+		
+	}
+
+	#top-bar .nav-item a {
+		line-height: 14px;
+		color:#e58929;
+		font-size:14px;
+	}
+
+	#top-bar .user-login{
+	padding-right:0px;
+	}
+
+	#top-bar .user-login .balance-bits {
+	   display: inline-block;
+	   padding-right: 0.2rem;
+	   float:right;
+	   font-size:14px;
+	}
+
+
+	#top-bar .user-login .register {
+	display: inline-block;
+	 padding-right: 0.2rem;
+	}
+
+	#top-bar .user-login .register a {
+		font-size:14px;
+		font-weight:bold;
+
+	}
+
+	#top-bar .user-login .login {
+		display: inline-block;
+	    padding-right: 0px;
+	}
+	
+	#top-bar .user-login .login a {
+		font-size:14px;
+		font-weight:bold;
+		text-align:right;
+	}
+
+	#top-bar .username {
+	 display: inline-block;
+	 padding-right: 0px
+	}
+	.full-screen{
+		display:none;
+	}
+
+
+/*user no login*/
+
+	#top-bar .no_menu{
+		float: right;
+		padding:0rem;
+		margin-left:0px;
+		right: 0;
+		top:2px;
+		position:absolute;
+		margin-right:8rem;
+	}
+
+
+	#top-bar .no_nav-item a {
+		line-height: 14px;
+		color:black;
+		font-size:14px;
+	}
+
+
+}
+
+
+
+
+
+
+
+/** Not logged user **/
+
+#top-bar .user-login .register {
+    display: inline-block;
+
+    padding-right: 1rem;
+}
+
+#top-bar .user-login .register a {
+
+}
+
+#top-bar .user-login .login {
+    display: inline-block;
+
+    padding-right: 2rem;
+}
+
+#top-bar .user-login .login a {
+    line-height: 2rem;
+
+}

@@ -1,0 +1,85 @@
+{{##def.page_title = 'Support' #}}
+
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+</script>
+<form action="/logout" method="post" id='logout'></form>
+<div class="content row panel radius">
+
+    <div class="settings">
+        <div class="small-2 columns">
+            <ul class="menu">
+                <!--<li>
+                    <a href="/account">내정보</a>
+                </li>
+				-->
+                <li>
+                    <a href="/security">정보수정</a>
+                </li>
+                <li>
+                    <a href="/deposit">충전하기</a>
+                </li>
+                <li>
+                    <a href="withdraw">환전하기</a>
+                </li>
+
+                <li class="active">
+                    1:1문의
+                </li>
+                <li>
+                    <a onclick="logout();">
+                        로그아웃
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="small-10 columns sets-content supports">
+            <h2 >제목 : {{=it.supports[0].title}}</h2>
+            <hr>
+            {{?it.supports.length > 0}}
+            {{~it.supports :support:index}}
+            {{?support.creator_id ==0 && support.confirmed == 1 }}
+                <div class="right panel callout small-8 columns sets-content">
+                    <label >답변일 <i>{{=(new Date(Date.parse(support.created)).toISOString().split('.')[0]).substr(0,19).replace('T', ' ')}}.</i></label>
+                {{??}}
+                <div class="left panel small-8 columns sets-content">
+                    <label >작성일 <i>{{=(new Date(Date.parse(support.created)).toISOString().split('.')[0]).substr(0,19).replace('T', ' ')}}.</i></label>
+                {{?}}
+                    <div class="">
+                        <p>{{=support.message}}</p>
+                    </div>
+                </div>
+            {{~}}
+            {{??}}
+            <br>
+            <br>
+            <br>
+            <p>문의내역이 없습니다.</p>
+            {{?}}
+        </div>
+        {{?it.supports[0].confirmed == 1}}
+        <div class="small-10 columns sets-content">
+            <div class="row contact">
+                <form action="/supportApply" id="contact" method="post">
+                    <label for="reply">추가문의</label>
+                    <textarea rows="10" id="reply" name="reply" required> </textarea>
+                    <input type="submit" class="border-button right blue" value="글쓰기!"/>
+                    <input type="hidden" id="supportId" name="supportId" value="{{=it.supportId}}"/>
+                </form>
+
+            </div>
+
+        </div>
+        {{?}}
+    </div>
+</div>
+#}}
+{{#def.include('./template/main_new')}}

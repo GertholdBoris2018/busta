@@ -1,0 +1,215 @@
+{{##def.page_title = 'Member Management' #}}
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+    $(document).ready(function(){
+            var form = $('#membereditform');
+            var error1 = $('.alert-danger', form);
+            var success1 = $('.alert-success', form);
+            form.validate({
+                errorElement: 'span', 
+                errorClass: 'help-block help-block-error', 
+                focusInvalid: false,
+                ignore: "",  
+                messages: {
+                    select_multi: {
+                        maxlength: jQuery.validator.format("Max {0} items allowed for selection"),
+                        minlength: jQuery.validator.format("At least {0} items must be selected")
+                    }
+                },
+                rules: {
+                    name: {
+                        minlength: 3,
+                        required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        minlength: 5,
+                        required: true
+                    },
+                    repassword: {
+                        minlength: 5,
+                        required: true,
+                        equalTo: '#password'
+                    },
+                    bank_name: {
+                        required: true
+                    },
+                    account_number: {
+                        required: true,
+                        number: true
+                    },
+                    bank_account_name: {
+                        required: true
+                    },
+                    balance: {
+                        required: true,
+                        number: true
+                    },
+                    mobile_phone_number: {
+                        required: true,
+                        number: true
+                    },
+                },
+
+                invalidHandler: function (event, validator) {            
+                    success1.hide();
+                    error1.show();
+                    
+                },
+
+                highlight: function (element) { 
+                    $(element)
+                        .closest('.form-group').addClass('has-error'); 
+                },
+
+                unhighlight: function (element) { 
+                    $(element)
+                        .closest('.form-group').removeClass('has-error'); 
+                },
+
+                success: function (label) {
+                    label
+                        .closest('.form-group').removeClass('has-error'); 
+                },
+
+                submitHandler: function (form) {
+                    success1.show();
+                    error1.hide();
+                    form.submit();
+                }
+            });
+
+            
+    });
+</script>
+<form action="/logout" method="post" id='logout'></form>
+
+<div class="content panel radius" style="width: 80% !important; margin-left: auto; margin-right: auto;">
+    <div class="settings">
+        <div class="small-2 columns">
+            {{#def.include('../template/sidebar')}}
+        </div>
+        <div class="small-10 columns setts-content">
+            <h5 class="">회원정보 수정</h5>
+            <hr/>
+            <form  id="membereditform" action="/admin/member-management/update" method="post">
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                    You have some form errors. Please check below.
+                </div>
+                <div class="alert alert-success display-hide">
+                    <button class="close" data-close="alert"></button>
+                    Your form validation is successful!
+                </div>
+                <input type="hidden" name="id" value="{{= it.edit_user.id}}" required>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">아이디 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" name="username" data-required="1" class="form-control" value="{{= it.edit_user.username}}" required readonly/>
+                    </div>
+                </div>
+
+                <!--<div class="form-group">
+                    <label class="control-label col-md-3">Email <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        {{? it.edit_user.email == null }}
+                        <input type="text" name="email" data-required="1" class="form-control" value="" required/>
+                        {{??}}
+                        <input type="text" name="email" data-required="1" class="form-control" value="{{= it.edit_user.email}}" required/>
+                        {{?}}
+                        
+                    </div>
+                </div>-->
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">비밀번호 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input id="password" type="password" name="password" data-required="1" class="form-control" value="*****" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">비밀번호 확인 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="password" name="repassword" data-required="1" class="form-control" value="*****" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">은행 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" name="bank_name" data-required="1" class="form-control" value="{{= it.edit_user.bank_name}}" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">계좌번호 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" name="account_number" data-required="1" class="form-control" value="{{= it.edit_user.account_number}}" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">예금주 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" name="bank_account_name" data-required="1" class="form-control" value="{{= it.edit_user.bank_account_name}}" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">보유금액 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" name="balance" data-required="1" class="form-control" value="{{= it.edit_user.balance_satoshis}}" required/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-3">휴대폰 <span class="required"> * </span>
+                    </label>
+                    <div class="col-md-9">
+                        <input type="text" name="mobile_phone_number" data-required="1" class="form-control" value="{{= it.edit_user.mobile_phone_number}}" required/>
+                    </div>
+                </div>
+                <!--<label>Username</label>
+                <input type="text" name="username" value="{{= it.edit_user.username}}" required readonly>-->
+                <!--<label>Email</label>
+                <input type="text" name="email" value="{{= it.edit_user.email}}" required readonly>-->
+                <!--<label>Bank Name</label>
+                <input type="text" name="bank_name" value="{{= it.edit_user.bank_name}}" required>-->
+                <!--<label>Account Number</label>
+                <input type="number" name="account_number" value="{{= it.edit_user.account_number}}" required>-->
+                <!--<label>Bank Account Name</label>
+                <input type="text" name="bank_account_name" value="{{= it.edit_user.bank_account_name}}" required>-->
+
+                <!--<label>Balance</label>
+                <input type="text" name="balance" value="{{= it.edit_user.balance_satoshis}}" required>-->
+
+                <!--<label>Mobile Phone Number</label>
+                <input type="text" name="mobile_phone_number" value="{{= it.edit_user.mobile_phone_number}}" required>-->
+
+                <input type="submit" class="border-button right blue" value="정보수정">
+            </form>
+
+        </div>
+    </div>
+    #}}
+    {{#def.include('../template/main_old')}}

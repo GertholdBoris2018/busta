@@ -1,0 +1,88 @@
+{{##def.page_title = 'Withdraw' #}}
+
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+</script>
+<form action="/logout" method="post" id='logout'></form>
+<div class="content row panel radius">
+    <div class="settings">
+        <div class="small-2 columns">
+            <ul class="menu">
+                <!--<li>
+                    <a href="/account">내정보</a>
+                </li>
+				-->
+                <li>
+                    <a href="/security">정보수정</a>
+                </li>
+                <li>
+                    <a href="/deposit">충전하기</a>
+                </li>
+                <li class="active">
+                    환전하기
+                </li>
+
+                <li>
+                    <a href="/support">1:1문의</a>
+                </li>
+                <li>
+                    <a onclick="logout();">
+                        로그아웃
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="small-10 columns sets-content">
+            <a class="border-button right green" href="/withdraw/request">환전신청하기</a>
+            <h5 ><b>부스타원 환전하기</b></h5>
+            <hr>
+            {{?it.exchanges.length > 0}}
+			<h5 >환전신청 내역</h5>
+                <table>
+                    <thead>
+                        <tr>
+                            <td class="show-for-large-up">날짜</td>
+                            <td>환전신청 금액</td>
+                            <td>계좌</td>
+                            <td>상태</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{~it.exchanges :exchange:index}}
+                            <tr>
+                                <!--<td>{{#def.format: {n: exchange.amount, decimals: 2 } }}</td>-->
+                                <td class="show-for-large-up">{{=(new Date(Date.parse(exchange.created)).toISOString().split('.')[0]).substr(0,10)}}</td>
+                                <td>{{=exchange.amount/100}}</td>
+                                <td>{{=it.user.bank_account_name}} | {{=it.user.account_number}} | {{=it.user.bank_name}}</td>
+                                <td style="text-align: center">
+                                    {{?exchange.confirmed == '0'}}
+                                         <span>Wait</span>
+                                    {{?? exchange.confirmed == '1'}}
+                                    <span class="label success">Confirm</span>
+                                    {{?? exchange.confirmed == '2'}}
+                                    <span class="label alert">Cancel</span>
+                                    {{?}}
+                                </td>
+                            </tr>
+                        {{~}}
+                    </tbody>
+                </table>
+            {{??}}
+                <br>
+                <br>
+                <br>
+                <p>환전내역이 없습니다.</p>
+            {{?}}
+        </div>
+    </div>
+</div>
+
+#}}
+{{#def.include('./template/main_new')}}

@@ -1,0 +1,62 @@
+{{##def.page_title = 'Support' #}}
+
+{{##def.content:
+<script type="text/javascript">
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    }
+</script>
+<form action="/logout" method="post" id='logout'></form>
+<div class="content row panel radius">
+
+    <div class="settings">
+        <div class="small-2 columns">
+            {{#def.include('../template/sidebar')}}
+        </div>
+
+        <div class="small-10 columns sets-content supports">
+            <h2 >Title : {{=it.supports[0].title}}</h2>
+            <hr>
+            {{?it.supports.length > 0}}
+            {{~it.supports :support:index}}
+                {{?support.creator_id ==0 && support.confirmed == 1 }}
+                <div class="right panel callout small-8 columns sets-content">
+                    <label >You wrote in <i>{{=(new Date(Date.parse(support.created)).toISOString().split('.')[0]).substr(0,19).replace('T', ' ')}}.</i></label>
+                {{??}}
+                <div class="left panel small-8 columns sets-content">
+                    <label >User wrote in <i>{{=(new Date(Date.parse(support.created)).toISOString().split('.')[0]).substr(0,19).replace('T', ' ')}}.</i></label>
+                {{?}}
+                    <div class="">
+                        <p>{{=support.message}}</p>
+                    </div>
+                </div>
+            {{~}}
+            {{??}}
+            <br>
+            <br>
+            <br>
+            <p>You have no supports.</p>
+            {{?}}
+        </div>
+
+        <div class="small-10 columns sets-content">
+            <div class="row contact">
+                <form action="/admin/supportApply" id="contact" method="post">
+                    <label for="reply">Re-ply</label>
+                    <textarea rows="10" id="reply" name="reply" required> </textarea>
+                    <input type="submit" class="border-button right blue" value="Reply!"/>
+                    <input type="hidden" id="supportId" name="supportId" value="{{=it.supportId}}"/>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+#}}
+    {{#def.include('../template/main_old')}}

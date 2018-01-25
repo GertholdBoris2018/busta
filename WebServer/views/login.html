@@ -1,0 +1,41 @@
+{{##def.page_title = 'Login' #}}
+
+{{##def.content:
+
+
+<div class="login">
+    <form action="/login" method="post" onsubmit="return submitEnabled;">
+        <div class="row">
+            <div class="large-12 columns">
+                <label>아이디
+                    <input type="text" name="username" required/>
+                </label>
+            </div>
+        </div>
+         <div class="row">
+            <div class="large-12 columns">
+                <label>비밀번호
+                    <input type="password" name="password" required />
+                </label>
+            </div>
+         </div>
+        <div class="row">
+            <div class="large-12 columns">
+                <label>
+                    아이디 기억하기
+                    <input type="checkbox" name="remember">
+                </label>
+            </div>
+        </div>
+         <div class="row">
+            <div class="large-12 columns">
+                <a href="/register">지금 가입하시면 무료체험 10,000원! [가입하기]</a>
+                <input id="loginSubmit" class="border-button right blue" value="로그인" type="submit" />
+            </div>
+        </div>
+
+    </form>
+</div>
+
+#}}
+{{#def.include('./template/main_new')}}

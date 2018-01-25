@@ -1,0 +1,105 @@
+{{##def.page_title = 'Statistics' #}}
+{{##def.content:
+
+<script type="text/javascript">
+
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    };
+
+</script>
+<form action="/logout" method="post" id='logout'></form>
+
+<div class="content panel radius" style="width: 80% !important; margin-left: auto; margin-right: auto;">
+    <div class="settings">
+        <div class="small-2 columns">
+            {{#def.include('../template/sidebar')}}
+        </div>
+        <div class="small-10 columns setts-content">
+            <h5 class="">Statistics</h5>
+            <hr/>
+
+            <div class="row">
+                <form class="panel callout" action="/admin/statistics" method="post">
+                    <div class="row">
+                        <div class="large-4 columns">
+
+                                <select name="query_year" id="query_year">
+                                    {{ for (var i=it.search_year_criteria_start; i<=it.search_year_criteria_end; i++ ) { }}
+                                    <option value="{{=i}}" {{? it.search_year == i}} selected {{?}}>{{=i}}</option>
+                                    {{ } }}
+                                </select>
+
+                        </div>
+                        <div class="large-4 columns">
+
+                                <select name="query_month" id="query_month">
+                                    {{ for (var i=1; i<=12; i++ ) { }}
+                                    <option value="{{=i}}" {{? it.search_month == parseInt(i)}} selected {{?}}>{{=i}}</option>
+                                    {{ } }}
+                                </select>
+
+                        </div>
+                        <div class="large-4 columns">
+                            <button class="btn success">Search</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Counter PC</th>
+                    <th>Counter Mobile</th>
+                    <th>Join</th>
+                    <th>Login</th>
+                    <th>Charging</th>
+                    <th>Exchange</th>
+                    <th>Difference</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {{var count_pc_sum = 0; var count_mobile_sum = 0; var join_sum =0; var login_sum = 0; var charging_sum = 0; var exchange_sum = 0; }}
+                {{~it.statistics :statistic:index}}
+                {{ count_pc_sum += parseFloat(statistic.count_pc); }}
+                {{ count_mobile_sum += parseFloat(statistic.count_mobile); }}
+                {{ join_sum += parseFloat(statistic.joined); }}
+                {{ login_sum += parseFloat(statistic.login); }}
+                {{ charging_sum += parseFloat(statistic.charging); }}
+                {{ exchange_sum += parseFloat(statistic.exchange); }}
+                <tr>
+                    <td>{{=(new Date(Date.parse(statistic.cdate)).toISOString().split('.')[0]).substr(0,11).replace('T', ' ')}}</td>
+                    <td>{{= statistic.count_pc}}</td>
+                    <td>{{= statistic.count_mobile}}</td>
+                    <td>{{= statistic.joined}}</td>
+                    <td>{{= statistic.login}}</td>
+                    <td>{{= statistic.charging}}</td>
+                    <td>{{= statistic.exchange}}</td>
+                    <td>{{= statistic.charging - statistic.exchange}}</td>
+                </tr>
+                {{~}}
+                <tr>
+                    <td><b>SUM</b></td>
+                    <td><b>{{= count_pc_sum}}</b></td>
+                    <td><b>{{= count_mobile_sum}}</b></td>
+                    <td><b>{{= join_sum}}</b></td>
+                    <td><b>{{= login_sum}}</b></td>
+                    <td><b>{{= charging_sum}}</b></td>
+                    <td><b>{{= exchange_sum}}</b></td>
+                    <td><b>{{= charging_sum-exchange_sum}}</b></td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    #}}
+    {{#def.include('../template/main_old')}}

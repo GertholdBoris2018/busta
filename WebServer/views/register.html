@@ -1,0 +1,133 @@
+{{##def.page_title = '회원가입' #}}
+
+{{##def.content:
+<script type="text/javascript">
+
+    window.onload = function () {
+        if (document.getElementById('confirmation') !== null) {
+            document.getElementById('confirmation').onchange = validatePassword;
+            document.getElementById('password').onchange = validatePassword;
+        }
+    };
+    function validatePassword() {
+        var password = document.getElementById('password').value;
+        var confirm = document.getElementById('confirmation').value;
+        if (password != confirm) {
+            document.getElementById('confirmation').setCustomValidity("비밀번호가 동일하지 않습니다.");
+        } else document.getElementById("confirmation").setCustomValidity('');
+    }
+
+    
+    
+</script>
+        <div class="register">
+            <form action="/register" method="post" onsubmit="return submitEnabled;">
+                <div class="row">
+                    <div class="large-12 columns input">
+                        <h5>BUSTAWON 회원가입</h5>
+                        <hr>
+                    </div>
+
+					<div class="register_notice_area">
+					가입 만 하시면 무료체험 머니 <font color="red">10,000원</font>을 드리고 있습니다.<br>
+가입 후 이용하시는 가상머니는 환전이 불가능한 가상체험 머니 입니다.<br>
+세계적으로 유명한 재미있는 그래프 게임을 무료로 체험해 보세요.
+
+						<!--계좌정보는 환전시 사용되며, 계좌변경은 불가능합니다. <font color="red">환전 계좌를 정확히 입력해주세요.</font>-->
+					</div>
+
+                    <div class="large-12 columns input">
+
+                        <div class="row">
+                           <div class="large-12 columns">
+                                <label for="username">아이디 입력</label>
+                            </div>
+                           <div class="large-12 columns">
+                                <input id="username" type="text" name="user[name]" value="{{?it.values}}{{!it.values.name}}{{?}}" autocomplete="off" pattern="[A-Za-z0-9_\-]{3,16}" title="Username only allowed alphanumeric, hyphen and underscore" required />
+                            </div>
+                        </div>
+                    </div>
+
+					<!--
+                    <div class="large-7 columns input">
+
+                        <div class="row">
+                            <div class="large-3 columns">
+                                <label for="email">*Recovery Email</label>
+                            </div>
+                            <div class="large-9 columns">
+                                <input type="email" id="email" value="{{?it.values}}{{!it.values.email}}{{?}}" placeholder="you@email.com" name="user[email]" autocomplete="off"/>
+                                <small><b>* Optional</b> although we <b>strongly advise you to use one</b>, otherwise it is <b>not possible</b> to password reset!</small>
+                            </div>
+                        </div>
+                    </div>
+					-->
+                    <div class="large-12 columns input">
+                        <div class="row">
+                           <div class="large-12 columns">
+                                <label>비밀번호</label>
+                            </div>
+                            <div class="large-12 columns">
+                                <input id="password" type="password" value="{{?it.values}}{{!it.values.password}}{{?}}" name="user[password]" autocomplete="off" pattern=".{7,200}" title="Password should be at least 7 characters" required/>
+                                <small>비밀번호는 최소 7자 이상 사용이 가능합니다.</small>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="large-12 columns input">
+                        <div class="row">
+                           <div class="large-12 columns">
+                                <label>비밀번호 확인</label>
+                            </div>
+                            <div class="large-12 columns">
+                                <input id="confirmation" type="password" value="{{?it.values}}{{!it.values.confirm}}{{?}}" name="user[confirm]" autocomplete="off" pattern=".{7,200}" data-equal-id="password" required/>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="large-12 columns input">
+                        <div class="row">
+                           <div class="large-12 columns">
+                                <label>은행</label>
+                            </div>
+                            <div class="large-12 columns">
+                                <input id="bank-name" type="text" value="{{?it.values}}{{!it.values.bank_name}}{{?}}" name="user[bank_name]" placeholder="Bank Name" autocomplete="off" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-12 columns input">
+                        <div class="row">
+                            <div class="large-12 columns">
+                                <label>계좌번호</label>
+                            </div>
+                            <div class="large-12 columns">
+                                <input id="account-number" type="number" value="{{?it.values}}{{!it.values.account_number}}{{?}}" name="user[account_number]" placeholder="Account Number" autocomplete="off" required/>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="large-12 columns input">
+                        <div class="row">
+                            <div class="large-12 columns">
+                                <label>예금주</label>
+                            </div>
+                            <div class="large-12 columns">
+                                <input id="bank-account-name" type="text" value="{{?it.values}}{{!it.values.bank_account_name}}{{?}}" name="user[bank_account_name]" placeholder="Bank Account Name" autocomplete="off" required/>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="large-12 columns input">
+                        <div class="row">
+                            <div class="large-12 columns">
+                                <label>휴대폰 번호</label>
+                            </div>
+                            <div class="large-12 columns">
+                                <input id="mobile-phone-number" type="text" value="{{?it.values}}{{!it.values.mobile_phone_number}}{{?}}" name="user[mobile_phone_number]" placeholder="Mobile Phone Number" autocomplete="off"/>
+                            </div>
+                        </div>
+                    </div>
+                   <div class="large-12 columns">
+                        <input id="registerSubmit" class="border-button blue" type="submit" value="회원가입"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+#}}
+{{#def.include('./template/main_new')}}

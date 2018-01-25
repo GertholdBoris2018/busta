@@ -1,0 +1,180 @@
+{{##def.page_title = 'Exchange Management' #}}
+{{##def.content:
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css" media="all">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+
+<script type="text/javascript">
+var url = '/admin/exchange-list';
+    $(document).ready(function(){
+        var dtable = $("#example").DataTable({
+            "processing": true,
+			"serverSide": true,
+			"responsive": true,
+			'ajax': {
+				'url': url,
+				'type': 'POST',
+				"cache": false
+			},
+			"order": [],
+			"columnDefs": [
+				{
+					"className": "center",
+					"targets": "_all"
+				},
+				{
+					"targets": "_all",
+					"orderable": false
+				},
+				{
+					"targets": "_all",
+					"searchable": false
+				}
+			],
+			"aLengthMenu": [
+				[10, 15, 20, 50, -1],
+				[10, 15, 20, 50, 'ALL'] 
+			],
+			"iDisplayLength": 20,
+			bAutoWidth: true,
+			bFilter: true,
+            "columns": [
+				{ "data": "exchanges_id"},
+				{ "data": "created_date" },
+				{ "data": "username" },
+				{ "data": "bank_name" },
+				{ "data": "bank_account_name"},
+                { "data": "account_number" },
+
+				{
+				"render": function(data, type, row, meta){
+					var amountd = row.amount;
+					var data = "";
+					if(amountd != 'null')
+						data += row.amount/100;
+					return data;
+					}
+				},
+                {
+
+                    "render": function(data, type, row, meta){
+                        var confirmed = row.confirmed;
+                        var data = "";
+                        if(confirmed == '0')
+                            data += '<a class="confirmed_label" onclick="applyExchange('+row.exchanges_id+', '+row.amount*100+', '+row.user_id+')">CONFIRM</a> <a class="removed_label in_line" onclick="deleteExchange('+row.exchanges_id+', '+row.amount+', '+row.user_id+')">CANCEL</a>';
+                        if(confirmed == '1')
+                            data += '<span class="confirmed_label">CONFIRM</span>';
+                        if(confirmed == '2')
+                            data += '<span class="removed_label">CANCEL</span>';
+                        return data;
+                    }
+                }
+			],
+            "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull){
+                var confirmed = aData.confirmed;
+                var row_class = '';
+                if(confirmed == 1) row_class = "confirmed_row";
+                if(confirmed == 2) row_class = "removed_row";
+                $(nRow).addClass( row_class );
+                return nRow;
+            }
+        });
+        $("#example_filter input")
+	        .unbind() 
+	        .bind("input", function(e) { 
+	        
+	        if(this.value.length >= 1 || e.keyCode == 13) {
+	           
+	           dtable.search(this.value).draw();
+	        }
+	        
+	        if(this.value == "") {
+	           dtable.search("").draw();
+	        }
+	        return;
+	    });
+    });
+
+    function logout() {
+        if (document.getElementById('logout') ) {
+            if (confirm("Are you sure you want to log out?")) {
+                document.getElementById("logout").submit();
+            }
+        }
+    };
+
+    function deleteExchange(exchangeId, amount, user) {
+        if (confirm("Are you sure you want to delete exchange?")) {
+            var url = '/admin/exchange-management/delete/' + exchangeId + '/' + amount + '/' + user;
+            window.location.href = url;
+        }
+    };
+
+    function applyExchange(exchangeId, amount, user) {
+        if (confirm("Are you sure to confirm?")) {
+            var url = '/admin/exchange-management/apply/' + exchangeId + '/' + amount + '/' + user;
+            window.location.href = url;
+        }
+    };
+
+    function searchQuery(e) {
+        if(e.keyCode == 13){
+            $("#search-frm").submit();
+        }
+    }
+</script>
+<form action="/logout" method="post" id='logout'></form>
+
+<div class="content panel radius" style="width: 80% !important; margin-left: auto; margin-right: auto;">
+    <div class="settings">
+        <div class="small-2 columns">
+            
+            {{#def.include('../template/sidebar')}}
+        </div>
+        <div class="small-10 columns setts-content">
+            <h5 class="">환전관리</h5>
+            <hr/>
+
+            <!--<div class="row">
+                <div class="small-8 columns">
+                    <form action="/admin/exchange-management" method="post" id="search-frm-date">
+                        <div class="small-8 columns">
+                            <input type="text" name="query_date" id="query_date" placeholder="Search by date" readonly value="{{=it.search_date}}">
+                        </div>
+                        <div class="small-4 columns">
+                            <button type="submit" name="search_date" class="button tiny success ">SEARCH</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="small-4 columns padding-right-0">
+                    <form action="/admin/exchange-management" method="get" id="search-frm">
+                        <input type="text" name="query" id="query" placeholder="Search by username" onkeydown="searchQuery(event)">
+                    </form>
+                </div>
+            </div>-->
+
+            <div class="row">
+                <p>총 환전금액: {{=it.total_exchanges/100}}원</p>
+            </div>
+
+            <table  id="example" class="display responsive nowrap" cellspacing="0" width="100%">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>날짜</th>
+                    <th>아이디</th>
+                    <th>은행</th>
+                    <th>예금주</th>
+                    <th>계좌번호</th>
+                    <th>환전신청금액</th>
+                    <th style="width:200px;">상태</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                
+                </tbody>
+            </table>
+        </div>
+    </div>
+    #}}
+    {{#def.include('../template/main_old')}}
